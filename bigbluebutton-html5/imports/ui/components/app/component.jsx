@@ -342,7 +342,6 @@ class App extends Component {
         <PollingContainer />
         <ModalContainer />
         <AudioContainer />
-        <ToastContainer rtl />
         <ChatAlertContainer />
         <WaitingNotifierContainer />
         <LockNotifier />

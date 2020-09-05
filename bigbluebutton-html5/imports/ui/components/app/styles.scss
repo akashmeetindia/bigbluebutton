@@ -113,7 +113,7 @@
   order: 1;
 
   @include mq($small-only) {
-    top: var(--navbar-height);
+    top: 6rem;
   }
 
   @include mq($medium-up) {

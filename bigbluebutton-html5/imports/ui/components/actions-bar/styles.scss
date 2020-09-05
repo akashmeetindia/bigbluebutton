@@ -79,7 +79,7 @@
 
 .centerWithActions {
   @include mq($xsmall-only) {
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 
@@ -107,3 +107,4 @@
     border-color: var(--color-white) !important;
   }
 }
+

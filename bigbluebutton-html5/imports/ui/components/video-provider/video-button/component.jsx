@@ -67,7 +67,6 @@ const JoinVideoButton = ({
       label={disabledLabel}
       className={cx(styles.button, isSharingVideo || styles.btn)}
       onClick={isSharingVideo ? handleCloseVideo : verifyIOS}
-      hideLabel
       aria-label={intl.formatMessage(intlMessages.videoButtonDesc)}
       color={isSharingVideo ? 'primary' : 'default'}
       icon={isSharingVideo ? 'video' : 'video_off'}

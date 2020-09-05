@@ -479,11 +479,9 @@ class VideoPreview extends Component {
                 onChange={this.handleSelectWebcam}
                 disabled={skipVideoPreview}
               >
-                {availableWebcams.map(webcam => (
-                  <option key={webcam.deviceId} value={webcam.deviceId}>
-                    {webcam.label}
-                  </option>
-                ))}
+                {availableWebcams.map(function(webcam,index) { 
+                   return <option key={webcam.deviceId} value={webcam.deviceId}>{webcam.label ? webcam.label : 'Camera ' + index}</option>;
+                })}
               </select>
             )
             : (

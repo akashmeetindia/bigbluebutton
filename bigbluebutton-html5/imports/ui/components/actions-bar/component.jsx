@@ -39,7 +39,6 @@ class ActionsBar extends PureComponent {
     } = this.props;
 
     const actionBarClasses = {};
-
     actionBarClasses[styles.centerWithActions] = amIPresenter;
     actionBarClasses[styles.center] = true;
     actionBarClasses[styles.mobileLayoutSwapped] = isLayoutSwapped && amIPresenter;
@@ -88,6 +87,15 @@ class ActionsBar extends PureComponent {
               />
             )
             : null}
+          {isLayoutSwapped
+            ? (
+              <PresentationOptionsContainer
+                toggleSwapLayout={toggleSwapLayout}
+                isThereCurrentPresentation={isThereCurrentPresentation}
+              />
+            )
+            : null
+          }
           <DesktopShare {...{
             handleShareScreen,
             handleUnshareScreen,
@@ -99,17 +107,6 @@ class ActionsBar extends PureComponent {
             screenshareDataSavingSetting,
           }}
           />
-        </div>
-        <div className={styles.right}>
-          {isLayoutSwapped
-            ? (
-              <PresentationOptionsContainer
-                toggleSwapLayout={toggleSwapLayout}
-                isThereCurrentPresentation={isThereCurrentPresentation}
-              />
-            )
-            : null
-          }
         </div>
       </div>
     );

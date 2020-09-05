@@ -82,7 +82,6 @@ class AudioControls extends PureComponent {
               className={cx(styles.button, !talking || styles.glow, !muted || styles.btn)}
               onClick={handleToggleMuteMicrophone}
               disabled={disable}
-              hideLabel
               label={muted ? intl.formatMessage(intlMessages.unmuteAudio)
                 : intl.formatMessage(intlMessages.muteAudio)}
               aria-label={muted ? intl.formatMessage(intlMessages.unmuteAudio)
@@ -95,22 +94,6 @@ class AudioControls extends PureComponent {
               accessKey={shortcuts.togglemute}
             />
           ) : null}
-        <Button
-          className={cx(styles.button, inAudio || styles.btn)}
-          onClick={inAudio ? handleLeaveAudio : handleJoinAudio}
-          disabled={disable}
-          hideLabel
-          aria-label={inAudio ? intl.formatMessage(intlMessages.leaveAudio)
-            : intl.formatMessage(intlMessages.joinAudio)}
-          label={inAudio ? intl.formatMessage(intlMessages.leaveAudio)
-            : intl.formatMessage(intlMessages.joinAudio)}
-          color={inAudio ? 'primary' : 'default'}
-          ghost={!inAudio}
-          icon={joinIcon}
-          size="lg"
-          circle
-          accessKey={inAudio ? shortcuts.leaveaudio : shortcuts.joinaudio}
-        />
       </span>);
   }
 }

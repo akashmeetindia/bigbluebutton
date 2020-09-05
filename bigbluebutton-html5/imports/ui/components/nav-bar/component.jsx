@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Session } from 'meteor/session';
 import cx from 'classnames';
+import { makeCall } from '/imports/ui/services/api';
 import { withModalMounter } from '/imports/ui/components/modal/service';
 import withShortcutHelper from '/imports/ui/components/shortcut-help/service';
 import getFromUserSettings from '/imports/ui/services/users-settings';
@@ -13,8 +14,11 @@ import RecordingIndicator from './recording-indicator/container';
 import TalkingIndicatorContainer from '/imports/ui/components/nav-bar/talking-indicator/container';
 import SettingsDropdownContainer from './settings-dropdown/container';
 
-
 const intlMessages = defineMessages({
+  leaveSessionLabel: {
+    id: 'app.navBar.settingsDropdown.leaveSessionLabel',
+    description: 'Leave session button label',
+  },
   toggleUserListLabel: {
     id: 'app.navBar.userListToggleBtnLabel',
     description: 'Toggle button label',
@@ -42,6 +46,14 @@ const defaultProps = {
 };
 
 class NavBar extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    // Set the logout code to 680 because it's not a real code and can be matched on the other side
+    this.LOGOUT_CODE = '680';
+
+    this.leaveSession = this.leaveSession.bind(this);
+  }
   static handleToggleUserList() {
     Session.set(
       'openPanel',
@@ -63,6 +75,14 @@ class NavBar extends PureComponent {
       connectRecordingObserver();
       window.addEventListener('message', processOutsideToggleRecording);
     }
+  }
+
+  leaveSession() {
+    makeCall('userLeftMeeting');
+    // we don't check askForFeedbackOnLogout here,
+    // it is checked in meeting-ended component
+    Session.set('codeError', this.LOGOUT_CODE);
+    // mountModal(<MeetingEndedComponent code={LOGOUT_CODE} />);
   }
 
   componentWillUnmount() {
@@ -91,41 +111,38 @@ class NavBar extends PureComponent {
     return (
       <div className={styles.navbar}>
         <div className={styles.top}>
-          <div className={styles.left}>
-            {!isExpanded ? null
-              : <Icon iconName="left_arrow" className={styles.arrowLeft} />
-            }
-            <Button
+        <div className={styles.left}>
+          <Button
               data-test="userListToggleButton"
               onClick={NavBar.handleToggleUserList}
-              ghost
               circle
-              hideLabel
+              data-test={hasUnreadMessages ? 'hasUnreadMessages' : null}
               label={intl.formatMessage(intlMessages.toggleUserListLabel)}
               aria-label={ariaLabel}
               icon="user"
-              className={cx(toggleBtnClasses)}
-              aria-expanded={isExpanded}
-              accessKey={TOGGLE_USERLIST_AK}
+              size="lg"
+              color={Session.get('openPanel') !== '' ? 'primary' : 'default'}
+              className={styles.btnParticipants}
             />
-            {isExpanded ? null
-              : <Icon iconName="right_arrow" className={styles.arrowRight} />
-            }
-          </div>
-          <div className={styles.center}>
-            <h1 className={styles.presentationTitle}>{presentationTitle}</h1>
-
-            <RecordingIndicator
+        </div>
+        <div className={styles.center}>
+          <RecordingIndicator
               mountModal={mountModal}
               amIModerator={amIModerator}
             />
-          </div>
-          <div className={styles.right}>
-            <SettingsDropdownContainer amIModerator={amIModerator} />
-          </div>
         </div>
-        <div className={styles.bottom}>
-          <TalkingIndicatorContainer amIModerator={amIModerator} />
+        <div className={styles.right}>
+            <Button
+          className={cx(styles.button || styles.btn)}
+          onClick={() => this.leaveSession()}
+          aria-label={intl.formatMessage(intlMessages.leaveSessionLabel)}
+          label={intl.formatMessage(intlMessages.leaveSessionLabel)}
+          color={'danger'}
+          icon={'logout'}
+          size="lg"
+          circle
+        />
+        </div>
         </div>
       </div>
     );

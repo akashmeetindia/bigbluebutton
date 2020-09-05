@@ -539,7 +539,6 @@ class AudioModal extends Component {
 
     return (
       <span>
-        {showPermissionsOvelay ? <PermissionsOverlay closeModal={closeModal} /> : null}
         <Modal
           overlayClassName={styles.overlay}
           className={styles.modal}
