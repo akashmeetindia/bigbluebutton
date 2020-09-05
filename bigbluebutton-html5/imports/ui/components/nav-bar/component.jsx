@@ -7,17 +7,26 @@ import { withModalMounter } from '/imports/ui/components/modal/service';
 import withShortcutHelper from '/imports/ui/components/shortcut-help/service';
 import getFromUserSettings from '/imports/ui/services/users-settings';
 import { defineMessages, injectIntl } from 'react-intl';
-import Icon from '../icon/component';
+//import Icon from '../icon/component';
 import { styles } from './styles.scss';
 import Button from '../button/component';
 import RecordingIndicator from './recording-indicator/container';
-import TalkingIndicatorContainer from '/imports/ui/components/nav-bar/talking-indicator/container';
-import SettingsDropdownContainer from './settings-dropdown/container';
+//import TalkingIndicatorContainer from '/imports/ui/components/nav-bar/talking-indicator/container';
+//import SettingsDropdownContainer from './settings-dropdown/container';
+import EndMeetingConfirmationContainer from '/imports/ui/components/end-meeting-confirmation/container';
 
 const intlMessages = defineMessages({
   leaveSessionLabel: {
     id: 'app.navBar.settingsDropdown.leaveSessionLabel',
     description: 'Leave session button label',
+  },
+  endMeetingLabel: {
+    id: 'app.navBar.settingsDropdown.endMeetingLabel',
+    description: 'End meeting options label',
+  },
+  endMeetingDesc: {
+    id: 'app.navBar.settingsDropdown.endMeetingDesc',
+    description: 'Describes settings option closing the current meeting',
   },
   toggleUserListLabel: {
     id: 'app.navBar.userListToggleBtnLabel',
@@ -37,12 +46,15 @@ const propTypes = {
   presentationTitle: PropTypes.string,
   hasUnreadMessages: PropTypes.bool,
   shortcuts: PropTypes.string,
+  isBreakoutRoom: PropTypes.bool,
+  isMeteorConnected: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
   presentationTitle: 'Default Room Title',
   hasUnreadMessages: false,
   shortcuts: '',
+  isBreakoutRoom: false,
 };
 
 class NavBar extends PureComponent {
@@ -98,9 +110,11 @@ class NavBar extends PureComponent {
       mountModal,
       presentationTitle,
       amIModerator,
+      isBreakoutRoom,
+      isMeteorConnected,
     } = this.props;
 
-
+    const allowedToEndMeeting = amIModerator && !isBreakoutRoom;
     const toggleBtnClasses = {};
     toggleBtnClasses[styles.btn] = true;
     toggleBtnClasses[styles.btnWithNotificationDot] = hasUnreadMessages;
@@ -132,6 +146,18 @@ class NavBar extends PureComponent {
             />
         </div>
         <div className={styles.right}>
+        {allowedToEndMeeting && isMeteorConnected ?
+        <Button
+          className={styles.btnEndMeeting}
+          onClick={() => mountModal(<EndMeetingConfirmationContainer />)}
+          aria-label={intl.formatMessage(intlMessages.endMeetingLabel)}
+          label={intl.formatMessage(intlMessages.endMeetingLabel)}
+          color={'danger'}
+          icon={'delete'}
+          size="lg"
+          circle
+        />
+        : null}
             <Button
           className={cx(styles.button || styles.btn)}
           onClick={() => this.leaveSession()}
